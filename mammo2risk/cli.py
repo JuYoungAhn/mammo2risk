@@ -7,6 +7,8 @@ from mammo2risk.facade import MammoRiskManager
 from glob import glob
 import os 
 from os.path import expanduser
+from pathlib import Path
+
 @click.command()
 @click.option('--d', help='dicom directory')
 @click.option('--f', help='file directory')
@@ -33,9 +35,9 @@ def main(d, f, o, w):
     return 0
 
 def get_dicom_files(d): 
-    files = glob(d+"/*.dcm")
+    files = Path(d).glob('**/*.dcm')
     if len(files) == 0: 
-      raise("No dicom files")
+      print("No dicom files")
     return files
   
 if __name__ == "__main__":
