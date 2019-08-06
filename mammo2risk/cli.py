@@ -14,7 +14,8 @@ from pathlib import Path
 @click.option('--f', help='file directory')
 @click.option('--o', default=".", help="output directory")
 @click.option('--w', help="weight directory")
-def main(d, f, o, w):
+@click.option('--r', is_flag=True)
+def main(d, f, o, w, r):
     """Console script for mammo2risk."""
     if w is None:
       w = expanduser("~/mammo2risk/weights")
@@ -23,19 +24,26 @@ def main(d, f, o, w):
     mammo_manager = MammoRiskManager(**model_config)
     
     if d:
-      files = get_dicom_files(d)
+      files = get_dicom_files(d, r)
     elif f :
       files = [f]
     else: 
       d = os.path.abspath('') # current path
-      files = get_dicom_files(d)
+      files = get_dicom_files(d, r)
     
     result = mammo_manager.mammo2risk(files)
     result.to_csv(o+"/result.csv", index=False)
     return 0
 
-def get_dicom_files(d): 
-    files = Path(d).glob('**/*.dcm')
+def get_dicom_files(d, r): 
+    if r: 
+      print("Recursively getting dicom files...")
+      files = [str(x) for x in list(Path(d).glob('**/*.dcm'))]
+      print(f"{len(files)} files were detected.")
+    else: 
+      files = glob(d+"/*.dcm")
+      print(f"{len(files)} files were detected.")
+      
     if len(files) == 0: 
       print("No dicom files")
     return files
