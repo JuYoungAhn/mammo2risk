@@ -7,6 +7,7 @@ from mammo2risk.resnet import ResNet
 from sklearn.preprocessing import StandardScaler
 from keras.applications.resnet50 import preprocess_input
 from sklearn.externals import joblib
+from mammo2risk.dicom_manager import DicomManager
 
 import warnings
 def warn(*args, **kwargs):
@@ -15,6 +16,9 @@ def warn(*args, **kwargs):
 warnings.warn = warn
 
 class DeepMammoRisk(object): 
+    HO_MEAN = 23.28493097200263
+    GE_MEAN = 36.1537367181762
+  
     def __init__(self, preprocessor, normalizer) :
         self.preprocessor = preprocessor
         self.normalizer = normalizer
@@ -49,12 +53,24 @@ class DeepMammoRisk(object):
     
     def get_deep_mammo_score(self, file): 
         image = self.preprocessor.resize_image(file)
-        norm_image = self.normalizer.normalize(image)
+        bg_threshold = self.preprocessor.get_bg_threhold_by_manufacturer(file)
+        masked_image = self.preprocessor.mask_air_region(image.copy(), image.copy(), background_threshold=bg_threshold) 
+        norm_image = self.normalizer.normalize(masked_image)
         norm_image = norm_image[..., None]
-        norm_image = np.repeat(norm_image, 3, axis=2)
         norm_image = norm_image[None, ...]
-        preprocessed_image = preprocess_input(norm_image)
-        return self.model.predict_proba(preprocessed_image)[0][0]
+        norm_image = np.repeat(norm_image, 3, axis=3)
+        
+        dicom = self.preprocessor.load_dicom(file)
+        manufacturer = DicomManager.get_manufacturer(dicom)
+        
+        if(manufacturer == 'GE') : 
+          MEAN = self.GE_MEAN
+        else :
+          MEAN = self.HO_MEAN
+        
+        zero_centered = (norm_image - MEAN)
+        
+        return self.model.predict_proba(zero_centered)[0][0]
       
     def get_deep_mammo_scores(self, files):
         return list(map(self.get_deep_mammo_score, tqdm(files)))

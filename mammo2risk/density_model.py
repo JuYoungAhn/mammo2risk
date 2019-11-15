@@ -24,6 +24,7 @@ warnings.warn = warn
 from mammo2risk.metric import weighted_categorical_crossentropy
 from mammo2risk.metric import mean_iou
 from mammo2risk.metric import gen_dice_loss
+from mammo2risk.dicom_manager import DicomManager
 from mammo2risk.monitoring import CorrelationMonitoring
 from mammo2risk.unet import *
 
@@ -355,8 +356,7 @@ class DeepDensity(DensityModelInterface) :
         normalized_image = self._normalizer.normalize(resized_image)
 
         ax = plt.imshow(normalized_image.reshape([self._preprocessor.width, self._preprocessor.height]), cmap=plt.cm.gray)
-        plt.imshow(cumulus_result, cmap="inferno", alpha=0.4, interpolation='bilinear')
-        
+        plt.imshow(cumulus_result, cmap="gnuplot2", alpha=0.4, interpolation='bilinear')
         plt.axis('off')
         
         if (file != False) : 
@@ -512,3 +512,25 @@ class MultiDensity(DeepDensity) :
       
     def get_pdas_cc(self, files) :  
         return list(map(self.get_pda_cc, tqdm(files)))
+      
+    def print_multi_densities(self, file): 
+        das = self.get_multilevel_da(file)
+        pdas = self.get_multilevel_pda(file)
+        
+        dicom = self.preprocessor.load_dicom(file)
+        manufacturer = DicomManager.get_manufacturer(dicom)
+        
+        da_cu = self.preprocessor.pixel_to_cm2(das[0], self.preprocessor.width, self.preprocessor.height, manufacturer)
+        da_ac = self.preprocessor.pixel_to_cm2(das[1], self.preprocessor.width, self.preprocessor.height, manufacturer)
+        da_cc = self.preprocessor.pixel_to_cm2(das[2], self.preprocessor.width, self.preprocessor.height, manufacturer)
+        
+        pda_cu = pdas[0]*100
+        pda_ac = pdas[1]*100
+        pda_cc = pdas[2]*100
+        
+        print(f"Cumulus(cm2):{round(da_cu, 2)}")
+        print(f"Altocumulus(cm2):{round(da_ac, 2)}")
+        print(f"Cirrocumulus(cm2):{round(da_cc, 2)}")
+        print(f"Cumulus(%):{round(pda_cu, 2)}")
+        print(f"Altocumulus(%):{round(pda_ac, 2)}")
+        print(f"Cirrocumulus(%):{round(pda_cc, 2)}")

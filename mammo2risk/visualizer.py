@@ -34,6 +34,9 @@ class Visualizer(object) :
     @dispatch(type, np.ndarray)
     def gray_plot(cls, image, file=False) : 
         fig = plt.figure()
+        
+        if np.ndim(image) == 3:
+            image = np.squeeze(image, axis=2)
         ax = plt.imshow(image, cmap=plt.cm.gray)
         ax = plt.Axes(fig,[0,0,1,1])
         plt.axis('off')

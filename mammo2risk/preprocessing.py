@@ -73,7 +73,7 @@ class Preprocessor(object) :
         return self.resize_image(image)
       
     @classmethod
-    def get_image(cls, file, width=256, height=224, interpolation=1) : 
+    def get_image(cls, file, width=256, height=224, interpolation=3) : 
         """ get image with from dicom file with given size 
 
         Args:
@@ -216,8 +216,11 @@ class Preprocessor(object) :
     def pixel_to_cm2(cls, das, width, height, manufacturer):
         if manufacturer == "GE": SCALE_FACTOR = cls.GE_SCALE_FACTOR
         elif manufacturer == "HOLOGIC": SCALE_FACTOR = cls.HOLOGIC_SCALE_FACTOR
-
-        return [x*SCALE_FACTOR/float(width*height) for x in das]
+          
+        if(type(das) == np.int64): 
+          return das*SCALE_FACTOR/float(width*height)
+        else : 
+          return [x*SCALE_FACTOR/float(width*height) for x in das]
       
     @classmethod
     @dispatch(type, object, (int, float), (int, float), (int, float), (int, float))
@@ -372,13 +375,13 @@ class Preprocessor(object) :
         image = self.get_dicom_pixel(dicom)
         resized_image = self.resize_image(image)
 
-        dense = self.get_dense_region(resized_image.copy(), threshold=dense_threshold)
-        ac = self.get_dense_region(resized_image.copy(), threshold=ac_threshold)
-        cc = self.get_dense_region(resized_image.copy(), threshold=cc_threshold)
         masked_image = self.mask_air_region(resized_image.copy(), resized_image.copy(), background_threshold=bg_threshold)  
+        dense = self.get_dense_region(masked_image.copy(), threshold=dense_threshold)
+        ac = self.get_dense_region(masked_image.copy(), threshold=ac_threshold)
+        cc = self.get_dense_region(masked_image.copy(), threshold=cc_threshold)
         air_region = self.get_air_region(image=masked_image, threshold=bg_threshold) 
         
-        result = resized_image.copy()
+        result = masked_image.copy()
         result[True == dense]  = self.DENSE_REGION
         result[True == ac]  = self.AC_DENSE_REGION
         result[True == cc]  = self.CC_DENSE_REGION
@@ -509,9 +512,6 @@ class Preprocessor(object) :
         """ get horizontal and vertical flips of images
         Args:
             x (ndarray): 4-D tensor 
-            ch (int): feature channel
-            - gray-scale image: 1
-            - color image: 3
         Returns:
             ndarray: augmented image tensor (4-D)
         """
@@ -564,7 +564,9 @@ class Preprocessor(object) :
             dicom = self.load_dicom(file)
             image = self.get_dicom_pixel(dicom)
             resized_image = self.resize_image(image) 
-            normalized_image = normalizer.normalize(resized_image)
+            bg_threshold = self.get_bg_threhold_by_manufacturer(file)
+            masked_image = self.mask_air_region(resized_image.copy(), resized_image.copy(), background_threshold=bg_threshold) 
+            normalized_image = normalizer.normalize(masked_image)
             result[index] = normalized_image.reshape([self.width, self.height, 1])
 
             if (index % 100 == 0):
@@ -589,8 +591,9 @@ class Preprocessor(object) :
             image = self.get_dicom_pixel(dicom)
             resized_image = self.resize_image(image) 
             bg_threshold = self.get_bg_threhold_by_manufacturer(dicom, width=self.width, height=self.height)
+            masked_image = self.mask_air_region(resized_image.copy(), resized_image.copy(), background_threshold=bg_threshold) 
             dense_threshold = thresholds[index]
-            segmented_image = self.get_segmented_image(resized_image, bg_threshold=bg_threshold, 
+            segmented_image = self.get_segmented_image(masked_image, bg_threshold=bg_threshold, 
                                                                dense_threshold=dense_threshold)
 
             result[index] = segmented_image.reshape([self.width, self.height, 1])
