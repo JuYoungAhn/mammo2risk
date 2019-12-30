@@ -62,8 +62,10 @@ def main(d, f, o, w, r, save, g):
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
     output_file_name = "mammo2risk"+current_time+".csv"
-    print("The result file was saved in "+o+"/"+output_file_name)
-    result.to_csv(o+"/"+output_file_name, index=False)
+    output_path = o+"/"+output_file_name
+    output_path = os.path.abspath(output_path)
+    print(output_path)
+    result.to_csv(output_path, index=False)
     
     return 0
 

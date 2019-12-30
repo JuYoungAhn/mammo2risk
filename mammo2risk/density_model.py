@@ -394,6 +394,7 @@ class DeepDensity(DensityModelInterface) :
         save_name = save_path+"/"+filename+".jpg"
         
         if not os.path.exists(save_name):
+          save_name = os.path.abspath(save_name)
           plt.savefig(save_name, transparent = True, bbox_inches = 'tight', pad_inches = 0)
           
         return 0

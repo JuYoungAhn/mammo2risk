@@ -60,8 +60,9 @@ class MammoRiskManager(object):
       
       # image save
       if img_save : 
-        img_save_path = img_save_path+"/result"
-        model.save_image(file, img_save_path)
+        save_path = img_save_path+"/result"
+        if not os.path.exists(save_path):
+            os.mkdir(save_path)
       
       return da_cm2
     
@@ -180,6 +181,7 @@ class MammoRiskManager(object):
       print("Extracting dicom information...")
       views = [DicomManager.get_view_position(x) for x in tqdm(dicoms)]
       side = [DicomManager.get_laterality(x) for x in tqdm(dicoms)]
+      manufacturer = [DicomManager.get_manufacturer(x) for x in tqdm(dicoms)]
       
       # mammo2risk 
       print("Loading Conventional Density Model...")
@@ -191,6 +193,7 @@ class MammoRiskManager(object):
       # Save files
       result['folder'] = folder_names
       result['file'] = file_names
+      result['manufacturer'] = manufacturer
       result["view"] = views
       result["side"] = side
       result["cumulus(cm2)"] = densities[:, 0]
