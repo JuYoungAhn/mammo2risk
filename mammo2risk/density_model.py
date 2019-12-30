@@ -382,6 +382,7 @@ class DeepDensity(DensityModelInterface) :
         ax1 = plt.subplot(1, 2, 1)
         ax1 = plt.imshow(normalized_image.reshape([self._preprocessor.width, self._preprocessor.height]), cmap=plt.cm.gray)
         plt.axis('off')
+        
         ax2 = plt.subplot(1, 2, 2)
         ax2 = plt.imshow(normalized_image.reshape([self._preprocessor.width, self._preprocessor.height]), cmap=plt.cm.gray)
         ax2 = plt.imshow(cumulus_result, cmap="jet", alpha=0.5, interpolation='bilinear')

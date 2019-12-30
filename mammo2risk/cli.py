@@ -92,5 +92,5 @@ def get_dicom_files(d, r):
     return files
   
 if __name__ == "__main__":
-    while True:
-      main()
+    main()
+    os._exit(0)
