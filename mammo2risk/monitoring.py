@@ -1,4 +1,5 @@
 import sys
+sys.path.append(".")
 from mammo2risk.preprocessing import Preprocessor
 import numpy as np
 import matplotlib.pyplot as plt

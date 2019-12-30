@@ -14,6 +14,7 @@ from tqdm import tqdm
 from sklearn.mixture import GaussianMixture
 from multipledispatch import dispatch
 import sys
+sys.path.append(".")
 import time
 from keras.preprocessing.image import ImageDataGenerator
 from mammo2risk.dicom_manager import DicomManager

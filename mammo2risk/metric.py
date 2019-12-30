@@ -3,11 +3,13 @@ from keras.callbacks import EarlyStopping
 from keras.optimizers import Adam
 from keras.callbacks import ModelCheckpoint
 from keras import Sequential
-from tensorflow import set_random_seed
+# from tensorflow import set_random_seed
+import sys
+sys.path.append(".")
 import tensorflow as tf
 from keras import backend as K
 import numpy as np
-set_random_seed(2)
+# set_random_seed(2)
 
 # Loss functions
 def dice_loss(y_true, y_pred):

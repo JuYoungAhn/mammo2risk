@@ -6,7 +6,7 @@ from keras.layers import Dropout
 from keras.layers import BatchNormalization
 from keras.models import Sequential
 
-def ResNet(top_fix=False, do=0.5, weights='imagenet'): 
+def ResNet(top_fix=False, do=0.5, weights='imagenet', transfer_weight=None): 
     model = Sequential()
     resnet = ResNet50(include_top=False, input_shape=(224, 224, 3), weights=weights)
 
@@ -23,6 +23,10 @@ def ResNet(top_fix=False, do=0.5, weights='imagenet'):
     model.add(BatchNormalization())
     model.add(Dropout(do))
     model.add(Dense(1, activation="sigmoid"))
+    
+    if transfer_weight:
+      model.load_weights(transfer_weight)
+    
     return model
   
 def ResNetWOsigmoid(top_fix=False, do=0.5, weights='imagenet'): 

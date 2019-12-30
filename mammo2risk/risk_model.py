@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd 
 import sys
 from tqdm import tqdm
+sys.path.append(".")
 from mammo2risk.preprocessing import Preprocessor
 from mammo2risk.resnet import ResNet
 from sklearn.preprocessing import StandardScaler

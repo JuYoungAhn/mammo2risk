@@ -14,7 +14,7 @@ with open('HISTORY.rst') as history_file:
 requirements = ['Click>=6.0', 'numpy>=1.15.4', 'pandas>=0.23.4', 
                 'tensorflow>=1.11.0', 'keras>=2.2.4', 'scikit-learn>=0.20.2', 'matplotlib>=3.0.2',
                 'seaborn>=0.9.0', 'scikit-image>=0.14.1', 'opencv-python>=4.1.0.25', 
-                'multipledispatch>=0.6.0', 'tqdm>=4.28.1', 'pydicom>=1.2.2', 'setuptools>=41.0.0']
+                'multipledispatch>=0.6.0', 'tqdm>=4.28.1', 'pydicom>=1.2.2', 'setuptools>=39.1.0']
 
 setup_requirements = [ ]
 test_requirements = [ ]

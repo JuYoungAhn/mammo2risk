@@ -36,7 +36,6 @@ def reduce_mem_usage(df):
     
     return df
 
-
 def import_data(file):
     """create a dataframe and optimize its memory usage"""
     df = pd.read_csv(file, parse_dates=True, keep_date_col=True)

@@ -1,4 +1,7 @@
 import sys
+sys.path.append(
+    "."
+)
 from mammo2risk.density_model import DeepDensity
 from mammo2risk.density_model import MultiDensity
 from mammo2risk.preprocessing import Preprocessor
@@ -26,13 +29,6 @@ class MammoRiskManager(object):
       self.HO_MD = ho_md
       self.GE_MR = ge_mr
       self.HO_MR = ho_mr
-      #self.GE_DR_COEF = ge_dr_coef
-      #self.GE_DR_INT = ge_dr_int
-      #self.HO_DR_COEF = ho_dr_coef
-      #self.HO_DR_INT = ho_dr_int
-      #self.GE_DR_SCALER = ge_dr_scaler
-      #self.HO_DR_SCALER = ho_dr_scaler
-      #self.DR_NUM_FEATURES = num_features
       return
     
     @classmethod
@@ -49,7 +45,7 @@ class MammoRiskManager(object):
       # config['num_features'] = weights['num_features']
       return config
       
-    def get_conventional_densities(self, file): 
+    def get_conventional_densities(self, file, img_save, img_save_path): 
       preprocessor = Preprocessor(width=256, height=224, interpolation=3)
       dicom = preprocessor.load_dicom(file)
       manufacturer = DicomManager.get_manufacturer(dicom)
@@ -61,9 +57,15 @@ class MammoRiskManager(object):
       ba = preprocessor.get_ba(file, width=256, height=224)
       da_cm2 = preprocessor.pixel_to_cm2(da, width=256, height=224, manufacturer=manufacturer)
       da_cm2.append(ba)
+      
+      # image save
+      if img_save : 
+        img_save_path = img_save_path+"/result"
+        model.save_image(file, img_save_path)
+      
       return da_cm2
     
-    def get_conventional_densities_all(self, files): 
+    def get_conventional_densities_all(self, files, img_save, img_save_path): 
       preprocessor = Preprocessor(width=256, height=224, interpolation=3)
       ge_model = MultiDensity(preprocessor=preprocessor, 
                               normalizer=CLAHENormalizer(**self.GE_MD_NORMALIZER_CONFIG))
@@ -73,17 +75,35 @@ class MammoRiskManager(object):
       ho_model.model = self.HO_MD
       
       result = np.zeros((len(files), 4))
+      
+      if img_save : 
+          save_path = img_save_path+"/result"
+          if not os.path.exists(save_path):
+            os.mkdir(save_path)
+      
       for i, file in enumerate(files): 
-        print(f"{i+1}/{len(files)} Getting conventional densities from {file} ...")
-        dicom = preprocessor.load_dicom(file)
-        manufacturer = DicomManager.get_manufacturer(dicom)
-        print(f"Manufacturer : {manufacturer}")
-        model = ge_model if manufacturer == 'GE' else ho_model 
-        da = model.get_multilevel_da(file)
-        ba = preprocessor.get_ba(file, width=256, height=224)
-        da = preprocessor.pixel_to_cm2(da, width=256, height=224, manufacturer=manufacturer)
-        da.append(ba)
-        result[i,:] = np.array(da)
+        try : 
+          print(f"{i+1}/{len(files)} Getting conventional densities from {file} ...")
+          dicom = preprocessor.load_dicom(file)
+          manufacturer = DicomManager.get_manufacturer(dicom)
+          print(f"Manufacturer : {manufacturer}")
+          model = ge_model if manufacturer == 'GE' else ho_model 
+          da = model.get_multilevel_da(file)
+          ba = preprocessor.get_ba(file, width=256, height=224)
+          da = preprocessor.pixel_to_cm2(da, width=256, height=224, manufacturer=manufacturer)
+          da.append(ba)
+          result[i,:] = np.array(da)
+          
+          if img_save : 
+            try : 
+              model.save_image(file, save_path)
+            except : 
+              print(file, "was not saved. ")
+        
+        except : 
+          print("Failed")
+          result[i,:] = np.zeros((1,4))
+          
       return result
     
     def get_density_score(self, file):
@@ -133,15 +153,20 @@ class MammoRiskManager(object):
       
       result = [0 for file in files]
       for i, file in enumerate(files): 
-        print(f"{i+1}/{len(files)} Getting deep mammo risk score from {file} ...")
-        dicom = preprocessor.load_dicom(file)
-        manufacturer = DicomManager.get_manufacturer(dicom)
-        print(f"Manufacturer : {manufacturer}")
-        model = ge_model if manufacturer == 'GE' else ho_model 
-        result[i] =  model.get_deep_mammo_score(file)
+        try : 
+          print(f"{i+1}/{len(files)} Getting deep mammo risk score from {file} ...")
+          dicom = preprocessor.load_dicom(file)
+          manufacturer = DicomManager.get_manufacturer(dicom)
+          print(f"Manufacturer : {manufacturer}")
+          model = ge_model if manufacturer == 'GE' else ho_model 
+          result[i] =  model.get_deep_mammo_score(file)
+        except : 
+          print("Failed")
+          result[i] = -999
+          
       return result
   
-    def mammo2risk(self, files): 
+    def mammo2risk(self, files, img_save=False, img_save_path=False): 
       print("Run mammo2risk-v0.1.0")    
       result = pd.DataFrame()
       
@@ -158,10 +183,7 @@ class MammoRiskManager(object):
       
       # mammo2risk 
       print("Loading Conventional Density Model...")
-      densities = self.get_conventional_densities_all(files)
-      
-      print("Getting Density Scores...")
-      dense_risk_scores = self.get_density_score_all(files)
+      densities = self.get_conventional_densities_all(files, img_save, img_save_path)
       
       print("Loading Mammo Risk Model...")
       mammo_risk_scores = self.get_deep_mammo_risk_all(files)
@@ -175,9 +197,8 @@ class MammoRiskManager(object):
       result["alto_cumulus(cm2)"] = densities[:, 1]
       result["cirro_cumulus(cm2)"] = densities[:, 2]
       result["breast_area(cm2)"] = densities[:, 3]
-      result["denserisk"] = dense_risk_scores
       result["mammorisk"] = mammo_risk_scores 
       return result
-      
+    
 if __name__ == "__main__":
     pass

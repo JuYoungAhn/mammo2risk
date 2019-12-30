@@ -138,7 +138,7 @@ class DicomManager(object) :
         result = {'exposure' : cls.get_exposure(dicom), 'exposure_time' : cls.get_exposure_time(dicom), 
                               'institute' : cls.get_institution(dicom), 'manufacturer' : cls.get_manufacturer(dicom), 
                               'patient' : cls.get_patient_name(dicom), 'model' : cls.get_model(dicom), 
-                              'view' : cls.get_view_position(dicom), 'protocol' : cls.get_protocol(dicom), 'study_description' : cls.get_study_description(dicom)}
+                              'view' : cls.get_view_position(dicom), 'protocol' : cls.get_protocol(dicom), 'study_description' : cls.get_study_description(dicom), 'side': cls.get_laterality(dicom)}
         return result
     
     @classmethod

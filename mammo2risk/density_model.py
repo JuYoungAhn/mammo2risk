@@ -13,7 +13,7 @@ from keras.callbacks import ModelCheckpoint
 from keras import Sequential
 from keras import backend as K
 from multipledispatch import dispatch
-
+import os
 
 import warnings
 def warn(*args, **kwargs):
@@ -345,7 +345,7 @@ class DeepDensity(DensityModelInterface) :
         sns.set_style("dark")
 
         cumulus_result = self.get_segmented_image(input_file, prob_threshold=prob_threshold, skin=skin)
-        cumulus_result[cumulus_result == -1] = 0
+        cumulus_result[cumulus_result == -1] = 0 
 
         dicom = self._preprocessor.load_dicom(input_file)
         image = self._preprocessor.get_dicom_pixel(dicom)
@@ -353,16 +353,49 @@ class DeepDensity(DensityModelInterface) :
         threshold = self._preprocessor.get_bg_threhold_by_manufacturer(input_file) 
         
         masked_image = self.mask_air_region(resized_image.copy(), resized_image.copy(), background_threshold=threshold)  
-        normalized_image = self._normalizer.normalize(resized_image)
+        normalized_image = self._normalizer.normalize(masked_image)
 
         ax = plt.imshow(normalized_image.reshape([self._preprocessor.width, self._preprocessor.height]), cmap=plt.cm.gray)
-        plt.imshow(cumulus_result, cmap="gnuplot2", alpha=0.4, interpolation='bilinear')
+        plt.imshow(cumulus_result, cmap="jet", alpha=0.5, interpolation='bilinear')
+        # plt.imshow(cumulus_result, cmap="gnuplot2", alpha=0.4, interpolation='bilinear')
         plt.axis('off')
         
         if (file != False) : 
           plt.savefig(file, transparent = True, bbox_inches = 'tight', pad_inches = 0)
         
         plt.show()
+        
+    def save_image(self, input_file, save_path, prob_threshold=0.5, skin=False) :
+        sns.set_style("dark")
+
+        cumulus_result = self.get_segmented_image(input_file, prob_threshold=prob_threshold, skin=skin)
+        cumulus_result[cumulus_result == -1] = 0 
+        
+        dicom = self._preprocessor.load_dicom(input_file)
+        image = self._preprocessor.get_dicom_pixel(dicom)
+        resized_image = self._preprocessor.resize_image(image) # resize image
+        threshold = self._preprocessor.get_bg_threhold_by_manufacturer(input_file) 
+        masked_image = self.mask_air_region(resized_image.copy(), resized_image.copy(), background_threshold=threshold)  
+        normalized_image = self._normalizer.normalize(masked_image)
+
+        # equivalent but more general
+        ax1 = plt.subplot(1, 2, 1)
+        ax1 = plt.imshow(normalized_image.reshape([self._preprocessor.width, self._preprocessor.height]), cmap=plt.cm.gray)
+        plt.axis('off')
+        ax2 = plt.subplot(1, 2, 2)
+        ax2 = plt.imshow(normalized_image.reshape([self._preprocessor.width, self._preprocessor.height]), cmap=plt.cm.gray)
+        ax2 = plt.imshow(cumulus_result, cmap="jet", alpha=0.5, interpolation='bilinear')
+        plt.axis('off')
+        
+        input_file = input_file.split("/")[-1]
+        filename, file_extension = os.path.splitext(input_file)
+        
+        save_name = save_path+"/"+filename+".jpg"
+        
+        if not os.path.exists(save_name):
+          plt.savefig(save_name, transparent = True, bbox_inches = 'tight', pad_inches = 0)
+          
+        return 0
     
 class MultiDensity(DeepDensity) : 
     def __init__(self, normalizer, preprocessor) : 

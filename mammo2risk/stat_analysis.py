@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve, auc
 import matplotlib.colors as colors
+import pandas as pd
 
 def draw_roc(y_true, y_probas) : 
     # Compute ROC curve and ROC area for each class
@@ -38,7 +39,8 @@ def get_auc(y_true, y_probas) :
     return roc_auc[0]
   
 def draw_roc_overlay(y_true, y_probas_df, labels) : 
-    colors_list = list(colors._colors_full_map.values())
+    
+    colors_list = colors = ["#1f77b4","#ff7f0e","#2ca02c","#f61600","#7834a9","#17becf","#684427","#fa5deb","#17becf","#17becf"]
     # linestyle_map = ['--', ':', '-.']
     label_map = labels
     plt.figure(figsize=(10,10))
@@ -70,3 +72,29 @@ def draw_roc_overlay(y_true, y_probas_df, labels) :
     plt.show()
     
     return roc_auc[0]
+  
+def cm_to_metric(cm, method) : 
+    TN = CM[0][0]
+    FN = CM[1][0]
+    TP = CM[1][1]
+    FP = CM[0][1]
+    # Sensitivity, hit rate, recall, or true positive rate
+    TPR = TP/(TP+FN)
+    # Specificity or true negative rate
+    TNR = TN/(TN+FP) 
+    # Precision or positive predictive value
+    PPV = TP/(TP+FP)
+    # Negative predictive value
+    NPV = TN/(TN+FN)
+    # Overall accuracy
+    ACC = (TP+TN)/(TP+FP+FN+TN)
+    F1 = 2*(PPV*TPR)/(PPV+TPR)
+    return pd.DataFrame({'Method':[method], 'Sensitivity':[TPR], 'Specificity':[TNR], 'PPV':[PPV], 'NPV':[NPV],"ACC":[ACC], "F1":[F1]})
+  
+def add_tertile_columns(df, columns):
+    for column in columns:
+        new_col = column + "_tertile"
+        df[new_col] = pd.qcut(
+            df[column], q=[0, 0.333, 0.666, 1], labels=["low", "medium", "high"]
+        )
+    return df
