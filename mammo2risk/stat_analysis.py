@@ -2,6 +2,9 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve, auc
 import matplotlib.colors as colors
 import pandas as pd
+import seaborn as sns
+import matplotlib
+import numpy as np
 
 def draw_roc(y_true, y_probas) : 
     # Compute ROC curve and ROC area for each class
@@ -44,6 +47,8 @@ def draw_roc_overlay(y_true, y_probas_df, labels) :
     # linestyle_map = ['--', ':', '-.']
     label_map = labels
     plt.figure(figsize=(10,10))
+    matplotlib.rc('xtick', labelsize=20) 
+    matplotlib.rc('ytick', labelsize=20) 
     for j in range(0, len(y_probas_df.columns)) : 
         y_probas = y_probas_df.iloc[:,j]
         fpr = dict()
@@ -63,10 +68,9 @@ def draw_roc_overlay(y_true, y_probas_df, labels) :
 
         plt.xlim([0.0, 1.0])
         plt.ylim([0.0, 1.05])
-        plt.xlabel('False Positive Rate')
-        plt.ylabel('True Positive Rate')
-        plt.title('Receiver operating characteristic')
-        plt.legend(loc="lower right", fontsize = 15)
+        plt.xlabel('False Positive Rate', fontsize = 20)
+        plt.ylabel('True Positive Rate', fontsize = 20)
+        plt.legend(loc="lower right", fontsize = 18)
 
     plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='-', label='reference')
     plt.show()
@@ -98,3 +102,70 @@ def add_tertile_columns(df, columns):
             df[column], q=[0, 0.333, 0.666, 1], labels=["low", "medium", "high"]
         )
     return df
+  
+def bland_altman_plot(data1, data2, xlab, *args, **kwargs):
+    data1     = np.asarray(data1)
+    data2     = np.asarray(data2)
+    mean      = np.mean([data1, data2], axis=0)
+    diff      = data1 - data2                   # Difference between data1 and data2
+    md        = np.mean(diff)                   # Mean of the difference
+    sd        = np.std(diff, axis=0)            # Standard deviation of the difference
+
+    plt.scatter(mean, diff, *args, **kwargs)
+    plt.axhline(md,           color='gray', linestyle='--')
+    plt.axhline(md + 1.96*sd, color='gray', linestyle='--')
+    plt.axhline(md - 1.96*sd, color='gray', linestyle='--')
+    plt.xlabel(xlab)
+    plt.ylabel("Discrepancy (%)")
+    
+def bland_altman_plot2(data1, data2, xlab, *args, **kwargs):
+    sns.set_context("paper")
+    sns.set(font='serif') 
+    sns.set_style("white", {
+        "font.family": "serif",
+        "font.serif": ["Times", "Palatino", "serif"]
+    })
+
+    data1     = np.asarray(data1)
+    data2     = np.asarray(data2)
+    mean      = np.mean([data1, data2], axis=0)
+    diff      = data1 - data2                   # Difference between data1 and data2
+    md        = np.mean(diff)                   # Mean of the difference
+    sd        = np.std(diff, axis=0)            # Standard deviation of the difference
+
+    plt.scatter(data1, diff, *args, **kwargs)
+    plt.axhline(md,           color='gray', linestyle='--')
+    plt.axhline(md + 1.96*sd, color='gray', linestyle='--')
+    plt.axhline(md - 1.96*sd, color='gray', linestyle='--')
+    plt.xlabel(xlab)
+    plt.ylabel("Discrepancy (%)")
+
+# https://scikit-learn.org/stable/auto_examples/calibration/plot_calibration_curve.html
+def plot_calibration_curve(y, x, name):
+    """Plot calibration curve for est w/o and with calibration. """
+    fig = plt.figure(figsize=(15, 10))
+
+    plt.plot([0, 1], [0, 1], "k:", label="Perfectly calibrated")
+    plt.plot(x, y, 'o-', color="black")
+    plt.ylabel("Fraction of positives")
+    plt.xlabel("Mean Predicted Values")
+    plt.ylim([-0.05, 1.05])
+    plt.legend(loc="lower right", fontsize=16)
+
+    plt.tight_layout()
+
+# https://scikit-learn.org/stable/auto_examples/calibration/plot_calibration_curve.html
+def plot_calibration_curve_with_conf(y, x, ub, lb, name):
+    """Plot calibration curve for est w/o and with calibration. """
+    fig = plt.figure(figsize=(15, 10))
+
+    plt.plot([0, 1], [0, 1], "k:", label="Perfectly calibrated")
+    plt.plot(x, y, 'o-', color="black")
+    plt.fill_between(np.arange(0,1,0.1), ub, lb,
+                     color='gray', alpha=.5)
+    plt.ylabel("Fraction of positives")
+    plt.xlabel("Mean Predicted Values")
+    plt.ylim([-0.05, 1.05])
+    plt.legend(loc="lower right", fontsize=16)
+
+    plt.tight_layout()

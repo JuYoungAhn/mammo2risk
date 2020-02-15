@@ -365,9 +365,9 @@ class DeepDensity(DensityModelInterface) :
         
         plt.show()
         
-    def save_image(self, input_file, save_path, prob_threshold=0.5, skin=False) :
+    def save_image(self, input_file, save_path, save_root, prob_threshold=0.5, skin=False) :
         sns.set_style("dark")
-
+        print("Saving Image..")
         cumulus_result = self.get_segmented_image(input_file, prob_threshold=prob_threshold, skin=skin)
         cumulus_result[cumulus_result == -1] = 0 
         
@@ -388,14 +388,25 @@ class DeepDensity(DensityModelInterface) :
         ax2 = plt.imshow(cumulus_result, cmap="jet", alpha=0.5, interpolation='bilinear')
         plt.axis('off')
         
-        input_file = input_file.split("/")[-1]
-        filename, file_extension = os.path.splitext(input_file)
         
-        save_name = save_path+"/"+filename+".jpg"
+        path, file = os.path.split(input_file)
+        print(input_file)
+        print(save_root)
+        filename = os.path.relpath(input_file, save_root)
+        filename = filename.replace("/", "-")
+        filename2, file_extension = os.path.splitext(filename)
+        save_name = filename2+".jpg"
         
-        if not os.path.exists(save_name):
-          save_name = os.path.abspath(save_name)
-          plt.savefig(save_name, transparent = True, bbox_inches = 'tight', pad_inches = 0)
+        save_path_final = save_path+"/"+save_name
+        
+        print(filename)
+        print(filename2)
+        print(save_name)
+        print(save_path_final)
+        
+        if not os.path.exists(save_path_final):
+          save_path = os.path.abspath(save_path_final)
+          plt.savefig(save_path, transparent = True, bbox_inches = 'tight', pad_inches = 0)
           
         return 0
     

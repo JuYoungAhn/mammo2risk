@@ -97,7 +97,7 @@ class MammoRiskManager(object):
           
           if img_save : 
             try : 
-              model.save_image(file, save_path)
+              model.save_image(file, save_path, img_save_path)
             except : 
               print(file, "was not saved. ")
         

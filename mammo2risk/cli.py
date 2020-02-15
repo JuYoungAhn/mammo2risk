@@ -5,6 +5,7 @@ import sys
 import click
 sys.path.append(".")
 from mammo2risk.facade import MammoRiskManager
+from mammo2risk.preprocessing import Preprocessor
 from glob import glob
 import os 
 from os.path import expanduser
@@ -79,12 +80,14 @@ def is_valid(d, f, o, w, r, g) :
       result = False
       
     return result 
-  
+
 def get_dicom_files(d, r): 
+    result = []
     if r: 
       print("Recursively getting dicom files...")
       files = [str(x) for x in list(Path(d).glob('**/*.dcm'))]
       print(f"{len(files)} files were detected.")
+      
     else: 
       files = glob(d+"/*.dcm")
       print(f"{len(files)} files were detected.")
