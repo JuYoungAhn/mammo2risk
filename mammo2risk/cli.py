@@ -65,7 +65,9 @@ def main(d, f, o, w, r, save, g):
     output_file_name = "mammo2risk"+current_time+".csv"
     output_path = o+"/"+output_file_name
     output_path = os.path.abspath(output_path)
-    print(output_path)
+    print(f"Result file is saved in {output_path}")
+    
+    output_path = output_path.replace("\\", "/")
     result.to_csv(output_path, index=False)
     
     return 0

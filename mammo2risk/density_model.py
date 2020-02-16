@@ -388,21 +388,18 @@ class DeepDensity(DensityModelInterface) :
         ax2 = plt.imshow(cumulus_result, cmap="jet", alpha=0.5, interpolation='bilinear')
         plt.axis('off')
         
-        
         path, file = os.path.split(input_file)
-        print(input_file)
-        print(save_root)
         filename = os.path.relpath(input_file, save_root)
-        filename = filename.replace("/", "-")
+        filename = filename.replace("../", "")
+        directory = os.path.dirname(save_path+'/'+filename)
+        
+        if not os.path.exists(directory):
+            os.mkdir(directory)
+        
         filename2, file_extension = os.path.splitext(filename)
         save_name = filename2+".jpg"
         
         save_path_final = save_path+"/"+save_name
-        
-        print(filename)
-        print(filename2)
-        print(save_name)
-        print(save_path_final)
         
         if not os.path.exists(save_path_final):
           save_path = os.path.abspath(save_path_final)

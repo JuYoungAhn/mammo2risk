@@ -41,11 +41,15 @@ class MammoRiskManager(object):
           weights = json.load(f)
 
       config = {key: weight_path + "/" + str(value) for (key, value) in weights.items()}
-      
-      # config['num_features'] = weights['num_features']
       return config
       
     def get_conventional_densities(self, file, img_save, img_save_path): 
+       # image save
+      if img_save : 
+        save_path = img_save_path+"/density_maps"
+        if not os.path.exists(save_path):
+            os.mkdir(save_path)
+            
       preprocessor = Preprocessor(width=256, height=224, interpolation=3)
       dicom = preprocessor.load_dicom(file)
       manufacturer = DicomManager.get_manufacturer(dicom)
@@ -57,12 +61,6 @@ class MammoRiskManager(object):
       ba = preprocessor.get_ba(file, width=256, height=224)
       da_cm2 = preprocessor.pixel_to_cm2(da, width=256, height=224, manufacturer=manufacturer)
       da_cm2.append(ba)
-      
-      # image save
-      if img_save : 
-        save_path = img_save_path+"/result"
-        if not os.path.exists(save_path):
-            os.mkdir(save_path)
       
       return da_cm2
     
@@ -78,7 +76,7 @@ class MammoRiskManager(object):
       result = np.zeros((len(files), 4))
       
       if img_save : 
-          save_path = img_save_path+"/result"
+          save_path = img_save_path+"/density_maps"
           if not os.path.exists(save_path):
             os.mkdir(save_path)
       
@@ -87,6 +85,7 @@ class MammoRiskManager(object):
           print(f"{i+1}/{len(files)} Getting conventional densities from {file} ...")
           dicom = preprocessor.load_dicom(file)
           manufacturer = DicomManager.get_manufacturer(dicom)
+          
           print(f"Manufacturer : {manufacturer}")
           model = ge_model if manufacturer == 'GE' else ho_model 
           da = model.get_multilevel_da(file)
