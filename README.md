@@ -1,10 +1,11 @@
 mammo2risk
 ==========
-From mammogram to risk: A deep learning-based comprehensive mammographic biomarker assessment tool for breast cancer risk prediction.
-
 ![alt text](https://img.shields.io/pypi/v/mammo2risk.svg "")
 ![alt text](https://img.shields.io/travis/JuYoungAhn/mammo2risk.svg "")
 ![alt text](https://readthedocs.org/projects/mammo2risk/badge/?version=latest "")
+
+From mammogram to risk: A deep learning-based comprehensive mammographic biomarker assessment tool for breast cancer risk prediction.
+
 Installation
 --------
 
@@ -22,6 +23,7 @@ Command Line Interface
 mammo2risk --f [file_path] --d [directory_path] --o [outputpath] --w [config_path] --r --save
 ```
 
+### Parameters
 Either --d or --f option is mandatory.
 
 ```
@@ -68,7 +70,5 @@ Features
 Credits
 -------
 
-This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
-
-.. _Cookiecutter: https://github.com/audreyr/cookiecutter
-.. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
+This package was created with Cookiecutter and the `audreyr/cookiecutter-pypackage` project template.
+- Cookiecutter: https://github.com/audreyr/cookiecutter
