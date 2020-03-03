@@ -1,6 +1,6 @@
 mammo2risk
 ==========
-
+From mammogram to risk: A deep learning-based comprehensive mammographic biomarker assessment tool for breast cancer risk prediction.
 
 .. image:: https://img.shields.io/pypi/v/mammo2risk.svg
         :target: https://pypi.python.org/pypi/mammo2risk
@@ -11,9 +11,6 @@ mammo2risk
 .. image:: https://readthedocs.org/projects/mammo2risk/badge/?version=latest
         :target: https://mammo2risk.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
-
-
-From mammogram to risk: A deep learning-based comprehensive mammographic biomarker assessment tool for breast cancer risk prediction.
 
 Installation
 --------
@@ -30,9 +27,11 @@ Command Line Interface
 
 ```
 mammo2risk --f [file_path] --d [directory_path] --o [outputpath] --w [config_path] --r --save
+```
 
 Either --d or --f option is mandatory.
 
+```
 --d : Directory path (string) [Default: current directory]
 --f : File path (string)
 --o : Output path (string, optional) / Default: current path
@@ -44,7 +43,7 @@ Either --d or --f option is mandatory.
 Usage Example
 --------
 
-Example
+### Example
 - Input directory : ~/samples
 - Two subdirectories : ~/samples/sample1, ~/samples/sample2
 - Each subdirectories has 2 dicom files (--r option).
@@ -55,10 +54,10 @@ Example
 mammo2risk --d ~/samples  --o ~/result  --w ~/mammo2risk/weights --r --save
 ```
 
-~/result/density_map <br>
+### ~/result/density_map 
 ![alt text](docs/figures/density_map.jfif "Density map")
 
-~/result/mammo2risk.csv <br>
+### ~/result/mammo2risk.csv 
 ![alt text](docs/figures/table.png "Result table")
 
 Weigth file
