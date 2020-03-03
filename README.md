@@ -22,6 +22,7 @@ Command Line Interface
 ```
 mammo2risk --f [file_path] --d [directory_path] --o [outputpath] --w [config_path] --r --save
 ```
+
 ### Parameters
 Either --d or --f option is mandatory.
 
@@ -48,10 +49,10 @@ Usage Example
 mammo2risk --d ~/samples  --o ~/result  --w ~/mammo2risk/weights --r --save
 ```
 
-#### ~/result/density_map 
+### ~/result/density_map 
 ![alt text](docs/figures/density_map.jfif "Density map")
 
-#### ~/result/mammo2risk.csv 
+### ~/result/mammo2risk.csv 
 ![alt text](docs/figures/table.png "Result table")
 
 Weigth file
@@ -71,4 +72,3 @@ Credits
 
 This package was created with Cookiecutter and the `audreyr/cookiecutter-pypackage` project template.
 - Cookiecutter: https://github.com/audreyr/cookiecutter
-
