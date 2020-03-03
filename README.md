@@ -22,7 +22,7 @@ Command Line Interface
 ```
 mammo2risk --f [file_path] --d [directory_path] --o [outputpath] --w [config_path] --r --save
 ```
-
+### Parameters
 Either --d or --f option is mandatory.
 
 ```
