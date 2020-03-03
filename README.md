@@ -48,10 +48,10 @@ Usage Example
 mammo2risk --d ~/samples  --o ~/result  --w ~/mammo2risk/weights --r --save
 ```
 
-### ~/result/density_map 
+#### ~/result/density_map 
 ![alt text](docs/figures/density_map.jfif "Density map")
 
-### ~/result/mammo2risk.csv 
+#### ~/result/mammo2risk.csv 
 ![alt text](docs/figures/table.png "Result table")
 
 Weigth file
