@@ -1,10 +1,10 @@
 mammo2risk
 ==========
-From mammogram to risk: A deep learning-based comprehensive mammographic biomarker assessment tool for breast cancer risk prediction.
-
 ![alt text](https://img.shields.io/pypi/v/mammo2risk.svg "")
 ![alt text](https://img.shields.io/travis/JuYoungAhn/mammo2risk.svg "")
 ![alt text](https://readthedocs.org/projects/mammo2risk/badge/?version=latest "")
+
+From mammogram to risk: A deep learning-based comprehensive mammographic biomarker assessment tool for breast cancer risk prediction.
 
 Installation
 --------
