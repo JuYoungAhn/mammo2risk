@@ -369,42 +369,46 @@ class DeepDensity(DensityModelInterface) :
         sns.set_style("dark")
         print("Saving Image..")
         cumulus_result = self.get_segmented_image(input_file, prob_threshold=prob_threshold, skin=skin)
-        cumulus_result[cumulus_result == -1] = 0 
-        
+        cumulus_result[cumulus_result == -1] = 0
+
         dicom = self._preprocessor.load_dicom(input_file)
         image = self._preprocessor.get_dicom_pixel(dicom)
         resized_image = self._preprocessor.resize_image(image) # resize image
-        threshold = self._preprocessor.get_bg_threhold_by_manufacturer(input_file) 
-        masked_image = self.mask_air_region(resized_image.copy(), resized_image.copy(), background_threshold=threshold)  
+        threshold = self._preprocessor.get_bg_threhold_by_manufacturer(input_file)
+        masked_image = self.mask_air_region(resized_image.copy(), resized_image.copy(), background_threshold=threshold)
         normalized_image = self._normalizer.normalize(masked_image)
 
         # equivalent but more general
         ax1 = plt.subplot(1, 2, 1)
         ax1 = plt.imshow(normalized_image.reshape([self._preprocessor.width, self._preprocessor.height]), cmap=plt.cm.gray)
         plt.axis('off')
-        
+
         ax2 = plt.subplot(1, 2, 2)
         ax2 = plt.imshow(normalized_image.reshape([self._preprocessor.width, self._preprocessor.height]), cmap=plt.cm.gray)
         ax2 = plt.imshow(cumulus_result, cmap="jet", alpha=0.5, interpolation='bilinear')
         plt.axis('off')
-        
+
         path, file = os.path.split(input_file)
+        input_file = input_file.replace("\\", "/")
+        save_root = save_root.replace("\\", "/")
         filename = os.path.relpath(input_file, save_root)
         filename = filename.replace("../", "")
+        filename = filename.replace("..\\", "")
         directory = os.path.dirname(save_path+'/'+filename)
-        
+        directory = directory.replace("\\", "/")
         if not os.path.exists(directory):
-            os.mkdir(directory)
-        
+            os.makedirs(directory)
+
         filename2, file_extension = os.path.splitext(filename)
         save_name = filename2+".jpg"
-        
+
         save_path_final = save_path+"/"+save_name
-        
+
+        save_path = save_path.replace('\\', '/')
         if not os.path.exists(save_path_final):
           save_path = os.path.abspath(save_path_final)
           plt.savefig(save_path, transparent = True, bbox_inches = 'tight', pad_inches = 0)
-          
+
         return 0
     
 class MultiDensity(DeepDensity) : 

@@ -30,9 +30,16 @@ def main(d, f, o, w, r, save, g):
       print("Arguments are not valid.")
       return 0
     
+    if not os.path.exists(o):
+      os.makedirs(o)
+      
     if w is None:
-      w = expanduser("~/mammo2risk/weights/config_v1.0.json")
-
+      w = expanduser("~/mammo2risk/weights/config.json")
+    else :
+      w = glob(w+"/*.json")[0]
+    
+    print(f'config path : {w}')
+      
     # directory 
     if d:
       files = get_dicom_files(d, r)
@@ -62,6 +69,7 @@ def main(d, f, o, w, r, save, g):
     # Save result csv files
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
+    current_time = current_time.replace(":", "")
     output_file_name = "mammo2risk"+current_time+".csv"
     output_path = o+"/"+output_file_name
     output_path = os.path.abspath(output_path)
