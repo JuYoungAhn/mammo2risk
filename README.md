@@ -2,16 +2,9 @@ mammo2risk
 ==========
 From mammogram to risk: A deep learning-based comprehensive mammographic biomarker assessment tool for breast cancer risk prediction.
 
-.. image:: https://img.shields.io/pypi/v/mammo2risk.svg
-        :target: https://pypi.python.org/pypi/mammo2risk
-
-.. image:: https://img.shields.io/travis/JuYoungAhn/mammo2risk.svg
-        :target: https://travis-ci.org/JuYoungAhn/mammo2risk
-
-.. image:: https://readthedocs.org/projects/mammo2risk/badge/?version=latest
-        :target: https://mammo2risk.readthedocs.io/en/latest/?badge=latest
-        :alt: Documentation Status
-
+![alt text](https://img.shields.io/pypi/v/mammo2risk.svg "")
+![alt text](https://img.shields.io/travis/JuYoungAhn/mammo2risk.svg "")
+![alt text](https://readthedocs.org/projects/mammo2risk/badge/?version=latest "")
 Installation
 --------
 
@@ -43,7 +36,7 @@ Either --d or --f option is mandatory.
 Usage Example
 --------
 
-### Example
+### Environment
 - Input directory : ~/samples
 - Two subdirectories : ~/samples/sample1, ~/samples/sample2
 - Each subdirectories has 2 dicom files (--r option).
