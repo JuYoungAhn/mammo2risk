@@ -9,10 +9,11 @@ From mammogram to risk: A deep learning-based comprehensive mammographic biomark
 Installation
 --------
 
-We recommend using conda env.
+We recommend using python virtual env.
 ```
-source activate [name]
+source activate [env_name]
 git clone https://github.com/JuYoungAhn/mammo2risk
+cd mammo2risk
 pip install -e .
 ```
 
@@ -29,7 +30,7 @@ Either --d or --f option is mandatory.
 ```
 --d : Directory path (string) [Default: current directory]
 --f : File path (string)
---o : Output path (string, optional) / Default: current path
+--o : Output path (string, optional) [Default: current path]
 --w : configuration file path (string, optional) [Default : ~/mammo2risk/weights]
 --r  :  If folder has subdirectories (flag, optional)
 --save : save density map (flag, optional)
@@ -48,18 +49,18 @@ Usage Example
 ```
 mammo2risk --d ~/samples  --o ~/result  --w ~/mammo2risk/weights --r --save
 ```
-
-### ~/result/density_map 
+### Outputs 
+#### (1) ~/result/density_map/[file_name].jpg
 ![alt text](docs/figures/density_map.jfif "Density map")
 
-### ~/result/mammo2risk.csv 
+#### (2) ~/result/mammo2risk.csv 
 ![alt text](docs/figures/table.png "Result table")
 
-Weigth file
+Weight files
 --------
-- Please contact me to use weight files (juyoung.ahn@snu.ac.kr)
-- In --w option, config file (.json) and weights files (.h5) are required. 
-- If you do not want to specify the w option, save in default path: [~/mammo2risk/weights] 
+- Please contact author to use weight files (juyoung.ahn@snu.ac.kr)
+- In --w option, config file (.json) and weights files (.h5) path shoule be specified. 
+- If you do not want to write --w option at each time, save both files in [~/mammo2risk/weights] 
 
 Features
 --------
