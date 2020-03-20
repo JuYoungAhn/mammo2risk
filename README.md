@@ -49,18 +49,18 @@ Usage Example
 ```
 mammo2risk --d ~/samples  --o ~/result  --w ~/mammo2risk/weights --r --save
 ```
-### Outputs 
+### Outputs
 #### (1) ~/result/density_map/[file_name].jpg
 ![alt text](docs/figures/density_map.jfif "Density map")
 
-#### (2) ~/result/mammo2risk.csv 
+#### (2) ~/result/mammo2risk.csv
 ![alt text](docs/figures/table.png "Result table")
 
 Weight files
 --------
-- Please contact author to use weight files (juyoung.ahn@snu.ac.kr)
-- In --w option, config file (.json) and weights files (.h5) path shoule be specified. 
-- If you do not want to write --w option at each time, save both files in [~/mammo2risk/weights] 
+- Please contact author to use weight files (juyoung.ahn@snu.ac.kr).
+- In --w option, config file (.json) and weights files (.h5) path shoule be specified.
+- If you do not want to write --w option at each time, save both files in [~/mammo2risk/weights].
 
 Features
 --------
