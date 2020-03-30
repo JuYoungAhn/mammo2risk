@@ -41,7 +41,7 @@ Usage Example
 
 ### Environment
 - Input directory : ~/samples
-- Two subdirectories : ~/samples/sample1, ~/samples/sample2
+- Subdirectories : ~/samples/sample1, ~/samples/sample2
 - Each subdirectories has 2 dicom files (--r option).
 - Config files saved in ~/mammo2risk/weights
 - Save density maps.
