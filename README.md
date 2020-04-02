@@ -9,7 +9,7 @@ From mammogram to risk: A deep learning-based comprehensive mammographic biomark
 Installation
 --------
 
-We recommend using python virtual env.
+We recommend using python virtual environment.
 ```
 source activate [env_name]
 git clone https://github.com/JuYoungAhn/mammo2risk
