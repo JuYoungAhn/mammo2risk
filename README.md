@@ -1,8 +1,5 @@
 mammo2risk
 ==========
-![alt text](https://img.shields.io/pypi/v/mammo2risk.svg "")
-![alt text](https://img.shields.io/travis/JuYoungAhn/mammo2risk.svg "")
-![alt text](https://readthedocs.org/projects/mammo2risk/badge/?version=latest "")
 
 From mammogram to risk: A deep learning-based comprehensive mammographic biomarker assessment tool for breast cancer risk prediction.
 
@@ -55,12 +52,6 @@ mammo2risk --d ~/samples  --o ~/result  --w ~/mammo2risk/weights --r --save
 
 #### (2) ~/result/mammo2risk.csv
 ![alt text](docs/figures/table.png "Result table")
-
-Weight files
---------
-- Please contact author to use weight files (juyoung.ahn@snu.ac.kr).
-- In --w option, config file (.json) and weights files (.h5) path shoule be specified.
-- If you do not want to write --w option at each time, save both files in [~/mammo2risk/weights].
 
 Features
 --------
