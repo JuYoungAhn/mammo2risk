@@ -52,15 +52,3 @@ mammo2risk --d ~/samples  --o ~/result  --w ~/mammo2risk/weights --r --save
 
 #### (2) ~/result/mammo2risk.csv
 ![alt text](docs/figures/table.png "Result table")
-
-Features
---------
-
-* Free software: MIT license
-* Documentation: https://mammo2risk.readthedocs.io.
-
-Credits
--------
-
-This package was created with Cookiecutter and the `audreyr/cookiecutter-pypackage` project template.
-- Cookiecutter: https://github.com/audreyr/cookiecutter
